@@ -1,0 +1,12 @@
+Source: bingwallpaper
+Section: misc
+Priority: extra
+Maintainer: Nishant Arora <me@nishantarora.in>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+
+Package: bingwallpaper
+Architecture: all
+Depends: ${misc:Depends}, curl (>=7.29.0)
+Description: Bing Wallpaper
+ Sets Bing picture of the day as your current wallpaper everytime you log in.
