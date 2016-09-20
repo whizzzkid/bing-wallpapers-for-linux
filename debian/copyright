@@ -2,7 +2,7 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: bingwallpaper
 
 Files: *
-Copyright: 2014 Nishant Arora <me@nishantarora.in>
+Copyright: 2016 Nishant Arora <me@nishantarora.in>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
