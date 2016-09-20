@@ -35,45 +35,49 @@ path="$HOME/Pictures/Bing/"
 # Required Image Uri
 reqImg=$bing$api$format$day$market$const
 
-# Logging
-echo "Pinging Bing API..."
+while [ 1 ]
+do
 
-# Fetching API response
-apiResp=$(curl -s $reqImg)
+  # Logging
+  echo "Pinging Bing API..."
 
-# Default image URL in case the required is not available
-defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
+  # Fetching API response
+  apiResp=$(curl -s $reqImg)
 
-# Req image url (raw)
-reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
+  # Default image URL in case the required is not available
+  defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
 
-# Trying to check if reqImgURL exists
-if ! wget --quiet --spider $reqImgURL; then
-  reqImgURL=$defImgURL
-fi
+  # Req image url (raw)
+  reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
 
-# Logging
-echo "Bing Image of the day: $reqImgURL"
+  # Trying to check if reqImgURL exists
+  if ! wget --quiet --spider $reqImgURL; then
+    reqImgURL=$defImgURL
+  fi
 
-# Getting Image Name
-imgName=${reqImgURL##*/}
+  # Logging
+  echo "Bing Image of the day: $reqImgURL"
 
-# Create Path Dir
-mkdir -p $path
+  # Getting Image Name
+  imgName=${reqImgURL##*/}
 
-# Saving Image to collection
-curl -s -o $path$imgName $reqImgURL
+  # Create Path Dir
+  mkdir -p $path
 
-#Logging
-echo "Saving image to $path$imgName"
+  # Saving Image to collection
+  curl -s -o $path$imgName $reqImgURL
 
-# Set the wallpaper both unity anf gnome3
-if gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
   #Logging
-  echo "New wallpaper set successfully"
-fi
+  echo "Saving image to $path$imgName"
 
-# Set the view to zoom
-gsettings set org.gnome.desktop.background picture-options "zoom"
+  # Set the wallpaper both unity anf gnome3
+  if gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
+    #Logging
+    echo "New wallpaper set successfully"
+  fi
 
-exit
+  # Set the view to zoom
+  gsettings set org.gnome.desktop.background picture-options "zoom"
+
+  sleep 7200
+done

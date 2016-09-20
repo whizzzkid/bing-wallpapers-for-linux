@@ -25,4 +25,4 @@ echo "Bing wallpaper will be updated on next reboot."
 echo "Running \"sh /usr/bin/bingwallpaper\" to update wallpaper now."
 /usr/bin/bingwallpaper
 
-#DEBHELPER#
+
