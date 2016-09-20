@@ -1,79 +1,84 @@
 #!/bin/bash
 # author: Whizzzkid (me@nishantarora.in)
 
-# Base URL
+# Base URL.
 bing="http://www.bing.com"
 
-# API end point
+# API end point.
 api="/HPImageArchive.aspx?"
 
-# Response Format (json|xml)
+# Response Format (json|xml).
 format="&format=js"
 
-# For day (0=current; 1=yesterday... so on)
+# For day (0=current; 1=yesterday... so on).
 day="&idx=0"
 
-# Market for image
-market="&mkt=en-IN"
+# Market for image.
+market="&mkt=en-US"
 
-# API Constant (fetch how many)
+# API Constant (fetch how many).
 const="&n=1"
 
-# Image extension
+# Image extension.
 extn=".jpg"
 
-# Size
+# Size.
 size="1920x1200"
 
-# Collection Path
+# Collection Path.
 path="$HOME/Pictures/Bing/"
 
 ########################################################################
 #### DO NOT EDIT BELOW THIS LINE #######################################
 ########################################################################
 
-# Required Image Uri
+# Required Image Uri.
 reqImg=$bing$api$format$day$market$const
 
-# Logging
-echo "Pinging Bing API..."
+while [ 1 ]
+do
 
-# Fetching API response
-apiResp=$(curl -s $reqImg)
+  # Logging.
+  echo "Pinging Bing API..."
 
-# Default image URL in case the required is not available
-defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
+  # Fetching API response.
+  apiResp=$(curl -s $reqImg)
 
-# Req image url (raw)
-reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
+  # Default image URL in case the required is not available.
+  defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
 
-# Trying to check if reqImgURL exists
-if ! wget --quiet --spider $reqImgURL; then
-  reqImgURL=$defImgURL
-fi
+  # Req image url (raw).
+  reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
 
-# Logging
-echo "Bing Image of the day: $reqImgURL"
+  # Checking if reqImgURL exists.
+  if ! wget --quiet --spider $reqImgURL; then
+    reqImgURL=$defImgURL
+  fi
 
-# Getting Image Name
-imgName=${reqImgURL##*/}
+  # Logging.
+  echo "Bing Image of the day: $reqImgURL"
 
-# Create Path Dir
-mkdir -p $path
+  # Getting Image Name.
+  imgName=${reqImgURL##*/}
 
-# Saving Image to collection
-curl -s -o $path$imgName $reqImgURL
+  # Create Path Dir.
+  mkdir -p $path
 
-#Logging
-echo "Saving image to $path$imgName"
+  # Saving Image to collection.
+  curl -s -o $path$imgName $reqImgURL
 
-# Set the wallpaper both unity anf gnome3
-if gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
-  #Logging
-  echo "New wallpaper set successfully"
-fi
+  # Logging.
+  echo "Saving image to $path$imgName"
 
-# Set the view to zoom
-gsettings set org.gnome.desktop.background picture-options "zoom"
+  # Set the wallpaper both unity and gnome3.
+  if gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
+    #Logging
+    echo "New wallpaper set successfully"
+  fi
 
-exit
+  # Set the view to zoom,
+  gsettings set org.gnome.desktop.background picture-options "zoom"
+
+  # Re-checks for updates every 3 hours.
+  sleep 10800
+done
