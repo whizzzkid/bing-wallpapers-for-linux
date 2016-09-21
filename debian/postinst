@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Stop on errors
+# Stop on errors.
 set -e
 
-# Creating Startup Link
+# Creating Startup Link.
 echo "Registering as startup application..."
 echo "[Desktop Entry]" >> "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Type=Application" >> "$HOME/.config/autostart/bingwallpaper.desktop"
@@ -14,15 +14,12 @@ echo "X-GNOME-Autostart-enabled=true" >> "$HOME/.config/autostart/bingwallpaper.
 echo "Name=Bing Wallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Comment=Bing Pic of the day as wallpaper." >> "$HOME/.config/autostart/bingwallpaper.desktop"
 
-# Misc Info
+# Misc Info.
 echo "All the images will everntually be available at: $HOME/Pictures/Bing/"
-
-# Firing app (not working)
-#echo "Starting Application"
-#sudo -u $SUDO_USER -c /usr/local/bin/bingwallpaper/bing_wallpaper.sh
-
 echo "Bing wallpaper will be updated on next reboot."
 echo "Running \"sh /usr/bin/bingwallpaper\" to update wallpaper now."
-/usr/bin/bingwallpaper  &>/dev/null &
+
+# Firing App.
+sudo -u $SUDO_USER -H nohup sh -c "/usr/bin/bingwallpaper" &>/dev/null &
 
 #DEBHELPER#
