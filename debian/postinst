@@ -4,6 +4,7 @@
 set -e
 
 # Creating Startup Link.
+echo $HOME
 echo "Registering as startup application..."
 echo "[Desktop Entry]" >> "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Type=Application" >> "$HOME/.config/autostart/bingwallpaper.desktop"
@@ -17,9 +18,6 @@ echo "Comment=Bing Pic of the day as wallpaper." >> "$HOME/.config/autostart/bin
 # Misc Info.
 echo "All the images will everntually be available at: $HOME/Pictures/Bing/"
 echo "Bing wallpaper will be updated on next reboot."
-echo "Running \"sh /usr/bin/bingwallpaper\" to update wallpaper now."
-
-# Firing App.
-sudo -u $SUDO_USER -H nohup sh -c "/usr/bin/bingwallpaper" &>/dev/null &
+echo "Run \"bingwallpaper\" to update wallpaper now."
 
 #DEBHELPER#
