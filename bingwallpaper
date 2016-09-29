@@ -43,6 +43,10 @@ do
 
   # Fetching API response.
   apiResp=$(curl -s $reqImg)
+  if [ $? -gt 0 ]; then
+    echo "Ping failed!"
+    exit 1
+  fi
 
   # Default image URL in case the required is not available.
   defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
