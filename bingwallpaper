@@ -28,6 +28,20 @@ size="1920x1200"
 # Collection Path.
 path="$HOME/Pictures/Bing/"
 
+# Make it run just once (useful to run as a cron)
+run_once=false
+while getopts "1" opt; do
+  case $opt in
+    1 )
+      run_once=true
+      ;;
+    \? )
+      echo "Invalid option! usage: \"$0 -1\", to run once and exit"
+      exit 1
+      ;;
+  esac
+done
+
 ########################################################################
 #### DO NOT EDIT BELOW THIS LINE #######################################
 ########################################################################
@@ -43,6 +57,10 @@ do
 
   # Fetching API response.
   apiResp=$(curl -s $reqImg)
+  if [ $? -gt 0 ]; then
+    echo "Ping failed!"
+    exit 1
+  fi
 
   # Default image URL in case the required is not available.
   defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
@@ -78,6 +96,11 @@ do
 
   # Set the view to zoom,
   gsettings set org.gnome.desktop.background picture-options "zoom"
+
+  # If -1 option was passed just run once
+  if [ $run_once == true ];then
+    break
+  fi
 
   # Re-checks for updates every 3 hours.
   sleep 10800
