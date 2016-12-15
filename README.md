@@ -1,7 +1,14 @@
 # Bing Wallpapers For Linux
 This enables bing wallpaper on linux, specifically debian based distros.
 
-## Installation Instruction (Ubuntu, Mint and other Debian based distros.
+## Supported Desktop Environments
+
+- Gnome
+- Cinnamon
+- Unity
+- Xfce
+
+## Installation Instruction (Ubuntu, Mint and other Debian based distros)
 This should be simple.
 
     sudo add-apt-repository ppa:whizzzkid/bingwallpaper
