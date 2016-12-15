@@ -88,15 +88,25 @@ do
   # Logging.
   echo "Saving image to $path$imgName"
 
-  # Set the wallpaper both unity and gnome3.
-  if gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
+  if [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]
+  then
+    xres=($(echo $(xfconf-query --channel xfce4-desktop --list | grep last-image)))
+    for x in "${xres[@]}"
+    do
+      xfconf-query --channel xfce4-desktop --property $x --set $path$imgName
+    done
+  # Set the wallpaper for unity, gnome3, cinnamon.
+  elif gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
     #Logging
-    echo "New wallpaper set successfully"
+    # Set the view to zoom,
+    gsettings set org.gnome.desktop.background picture-options "zoom"
+  else
+    "$XDG_CURRENT_DESKTOP not supported."
+    break
   fi
 
-  # Set the view to zoom,
-  gsettings set org.gnome.desktop.background picture-options "zoom"
-
+  echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
+  
   # If -1 option was passed just run once
   if [ $run_once == true ];then
     break
