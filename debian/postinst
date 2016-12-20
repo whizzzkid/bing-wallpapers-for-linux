@@ -3,6 +3,9 @@
 # Stop on errors.
 set -e
 
+# Deleting existing config.
+rm -f "$HOME/.config/autostart/bingwallpaper.desktop"
+
 # Creating Startup Link.
 echo $HOME
 echo "Registering as startup application..."
