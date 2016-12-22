@@ -3,13 +3,12 @@
 # Stop on errors.
 set -e
 
-# Deleting existing config.
-rm -f "$HOME/.config/autostart/bingwallpaper.desktop"
-
 # Creating Startup Link.
 echo $HOME
 echo "Registering as startup application..."
-echo "[Desktop Entry]" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+
+# This should prevent the double entry.
+echo "[Desktop Entry]" > "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Type=Application" >> "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Exec=sh /usr/bin/bingwallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Hidden=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
