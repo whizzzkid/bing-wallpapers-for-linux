@@ -30,15 +30,15 @@ To update the wallpaper only once (Instead of checking every 3 hours), Run:
     $ bingwallpaper -1
 
 ## Setting Up Cron
-Do not use sudo, as it will set up the cron for root, which will not change the wallpaper for the current user. To edit crontab for current user do:
+To setup regular checks for new wallapers, edit crontab for the current user, using:
 
     $ crontab -u $USER -e
 
-We would only need to run it once, because cron will be re-running this, so:
+, and add this line:
 
-    $ * */6 * * * bingwallpaper true >/dev/null 2>&1
+    0 */6 * * * bingwallpaper -1 > /dev/null 2>&1
 
-This will run this every 6 hours. You can use [this link](http://www.crontab-generator.org/) for reference.
+This will run every 6 hours. You can use [this link](http://www.crontab-generator.org/) for reference.
 
 *Note: If you installed this package from apt, then disable the startup script setup by default. Go to startup applications and remove 'bingwallpaper'*
 
