@@ -18,7 +18,7 @@ echo "Name=Bing Wallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
 echo "Comment=Bing Pic of the day as wallpaper." >> "$HOME/.config/autostart/bingwallpaper.desktop"
 
 # Misc Info.
-echo "All the images will everntually be available at: $HOME/Pictures/Bing/"
+echo "All the images will eventually be available at: $HOME/Pictures/Bing/"
 echo "Bing wallpaper will be updated on next reboot."
 echo "Run \"bingwallpaper\" to update wallpaper now."
 
