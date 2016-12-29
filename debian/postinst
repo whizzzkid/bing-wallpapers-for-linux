@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Stop on errors.
 set -e
@@ -6,20 +6,37 @@ set -e
 # Creating Startup Link.
 echo $HOME
 echo "Registering as startup application..."
+echo ""
+echo "Do you want no watermarks on your wallpapers? Type Y if you hate them. Type any other key if you love them."
+read input
+if [[ $input == "Y" || $input == "y" ]]; then
+       # This should prevent the double entry.
+       echo "[Desktop Entry]" > "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Type=Application" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Exec=sh /usr/bin/bingwallpaper-nowatermark" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Hidden=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "NoDisplay=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "X-GNOME-Autostart-enabled=true" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Name=Bing Wallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Comment=Bing Pic of the day as wallpaper." >> "$HOME/.config/autostart/bingwallpaper.desktop"
 
-# This should prevent the double entry.
-echo "[Desktop Entry]" > "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "Type=Application" >> "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "Exec=/usr/bin/bingwallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "Hidden=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "NoDisplay=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "X-GNOME-Autostart-enabled=true" >> "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "Name=Bing Wallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
-echo "Comment=Bing Pic of the day as wallpaper." >> "$HOME/.config/autostart/bingwallpaper.desktop"
+else
+       # This should prevent the double entry.
+       echo "[Desktop Entry]" > "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Type=Application" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Exec=sh /usr/bin/bingwallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Hidden=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "NoDisplay=false" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "X-GNOME-Autostart-enabled=true" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Name=Bing Wallpaper" >> "$HOME/.config/autostart/bingwallpaper.desktop"
+       echo "Comment=Bing Pic of the day as wallpaper." >> "$HOME/.config/autostart/bingwallpaper.desktop"
+fi
+
 
 # Misc Info.
 echo "All the images will eventually be available at: $HOME/Pictures/Bing/"
 echo "Bing wallpaper will be updated on next reboot."
 echo "Run \"bingwallpaper\" to update wallpaper now."
+echo "Run \"bingwallpaper-nowatermark\" for the no watermark version."
 
 #DEBHELPER#
