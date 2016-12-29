@@ -43,7 +43,7 @@ This will run every 6 hours. You can use [this link](http://www.crontab-generato
 *Note: If you installed this package from apt, then disable the startup script setup by default. Go to startup applications and remove 'bingwallpaper'*
 
 ## Contributing
-Feel free to make changes and send PR, I'll be aaccepting them.
+Feel free to make changes and send PR, I'll be accepting them.
 
 ## License
 GPLv2
