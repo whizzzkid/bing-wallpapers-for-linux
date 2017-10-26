@@ -1,5 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # author: Whizzzkid (me@nishantarora.in)
+
+set -euo pipefail
 
 # Base URL.
 bing="http://www.bing.com"
@@ -28,6 +30,10 @@ size="1920x1200"
 # Collection Path.
 path="$HOME/Pictures/Bing/"
 
+########################################################################
+#### DO NOT EDIT BELOW THIS LINE #######################################
+########################################################################
+
 # Make it run just once (useful to run as a cron)
 run_once=false
 while getopts "1" opt; do
@@ -42,32 +48,28 @@ while getopts "1" opt; do
   esac
 done
 
-########################################################################
-#### DO NOT EDIT BELOW THIS LINE #######################################
-########################################################################
-
 # Required Image Uri.
-reqImg=$bing$api$format$day$market$const
-
-while [ 1 ]
+reqImg="$bing$api$format$day$market$const"
+echo "request: $reqImg"
+while  true
 do
 
   # Logging.
   echo "Pinging Bing API..."
 
   # Fetching API response.
-  apiResp=$(curl -s $reqImg)
-  if [ $? -gt 0 ]; then
+  apiResp=$(curl -s "$reqImg")
+  if [[ -z "$apiResp" ]]; then
     echo "Ping failed!"
     exit 1
   fi
 
   # Default image URL in case the required is not available.
-  defImgURL=$bing$(echo $apiResp | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
-
+  defImgURL=$bing$(echo "$apiResp" | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
+  echo "defImgURL: $defImgURL"
   # Req image url (raw).
   reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
-
+  echo "reqImgURL: $reqImgURL"
   # Checking if reqImgURL exists.
   if ! wget --quiet --spider $reqImgURL; then
     reqImgURL=$defImgURL
@@ -80,20 +82,21 @@ do
   imgName=${reqImgURL##*/}
 
   # Create Path Dir.
-  mkdir -p $path
+  mkdir -p "$path"
 
   # Saving Image to collection.
-  curl -s -o $path$imgName $reqImgURL
+  curl -s -o "$path$imgName" "$reqImgURL"
 
   # Logging.
   echo "Saving image to $path$imgName"
 
-  if [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]
+  : "${XDG_CURRENT_DESKTOP:=}"
+  if [[ "$XDG_CURRENT_DESKTOP" = "XFCE" ]]
   then
     xres=($(echo $(xfconf-query --channel xfce4-desktop --list | grep last-image)))
     for x in "${xres[@]}"
     do
-      xfconf-query --channel xfce4-desktop --property $x --set $path$imgName
+      xfconf-query --channel xfce4-desktop --property $x --set "$path$imgName"
     done
   # Set the wallpaper for unity, gnome3, cinnamon.
   elif gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
