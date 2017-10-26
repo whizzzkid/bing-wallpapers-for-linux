@@ -34,6 +34,12 @@ path="$HOME/Pictures/Bing/"
 #### DO NOT EDIT BELOW THIS LINE #######################################
 ########################################################################
 
+# echo error
+function error()
+{
+  echo "[Error]: $*" >&2
+}
+
 # Make it run just once (useful to run as a cron)
 run_once=false
 while getopts "1" opt; do
@@ -42,7 +48,7 @@ while getopts "1" opt; do
       run_once=true
       ;;
     \? )
-      echo "Invalid option! usage: \"$0 -1\", to run once and exit"
+      error "Invalid option! usage: \"$0 -1\", to run once and exit"
       exit 1
       ;;
   esac
@@ -50,7 +56,7 @@ done
 
 # Required Image Uri.
 reqImg="$bing$api$format$day$market$const"
-echo "request: $reqImg"
+#echo "request: $reqImg"
 while  true
 do
 
@@ -60,14 +66,15 @@ do
   # Fetching API response.
   apiResp=$(curl -s "$reqImg")
   if [[ -z "$apiResp" ]]; then
-    echo "No valid API respone"
+    error "No valid API response"
     exit 1
   fi
 
-  reqImgURL=$bing$(echo $apiResp | jq -r ".images[0].urlbase" )"_"$size$extn
+  baseurl=$(echo "$apiResp" | jq -r ".images[0].urlbase" )
+  reqImgURL="${bing}${baseurl}_${size}${extn}"
 
   # Checking if reqImgURL exists.
-  if ! wget --quiet --spider $reqImgURL; then
+  if ! wget --quiet --spider "$reqImgURL"; then
     reqImgURL=$bing$(echo "$apiResp" | jq -r ".images[0].url")
   fi
 
@@ -87,29 +94,30 @@ do
   echo "Saving image to $path$imgName"
 
   : "${XDG_CURRENT_DESKTOP:=}"
-  if [[ "$XDG_CURRENT_DESKTOP" = "XFCE" ]]
+  if [[ "$XDG_CURRENT_DESKTOP" = "XFCE" ]];
   then
     xres=($(echo $(xfconf-query --channel xfce4-desktop --list | grep last-image)))
     for x in "${xres[@]}"
     do
-      xfconf-query --channel xfce4-desktop --property $x --set "$path$imgName"
+      xfconf-query --channel xfce4-desktop --property "$x" --set "$path$imgName"
     done
   # Set the wallpaper for unity, gnome3, cinnamon.
   elif gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
     # Set the view to zoom,
     gsettings set org.gnome.desktop.background picture-options "zoom"
   else
-    echo "$XDG_CURRENT_DESKTOP not supported."
+    error "$XDG_CURRENT_DESKTOP not supported."
     break
   fi
 
   echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
 
   # If -1 option was passed just run once
-  if [ $run_once == true ];then
+  if [[ $run_once == true ]];
+  then
     break
   fi
 
   # Re-checks for updates every 3 hours.
-  sleep 10800
+  sleep 3h
 done
