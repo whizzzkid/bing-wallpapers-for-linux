@@ -101,12 +101,12 @@ do
     # Set the view to zoom,
     gsettings set org.gnome.desktop.background picture-options "zoom"
   else
-    "$XDG_CURRENT_DESKTOP not supported."
+    echo "$XDG_CURRENT_DESKTOP not supported."
     break
   fi
 
   echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
-  
+
   # If -1 option was passed just run once
   if [ $run_once == true ];then
     break
