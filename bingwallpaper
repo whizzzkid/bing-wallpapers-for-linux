@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # author: Whizzzkid (me@nishantarora.in)
-
 set -euo pipefail
+IFS="$(printf '\n\t')"
 
 # Base URL.
 bing="http://www.bing.com"
@@ -60,19 +60,15 @@ do
   # Fetching API response.
   apiResp=$(curl -s "$reqImg")
   if [[ -z "$apiResp" ]]; then
-    echo "Ping failed!"
+    echo "No valid API respone"
     exit 1
   fi
 
-  # Default image URL in case the required is not available.
-  defImgURL=$bing$(echo "$apiResp" | grep -oP "url\":\"[^\"]*" | cut -d "\"" -f 3)
-  echo "defImgURL: $defImgURL"
-  # Req image url (raw).
-  reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
-  echo "reqImgURL: $reqImgURL"
+  reqImgURL=$bing$(echo $apiResp | jq -r ".images[0].urlbase" )"_"$size$extn
+
   # Checking if reqImgURL exists.
   if ! wget --quiet --spider $reqImgURL; then
-    reqImgURL=$defImgURL
+    reqImgURL=$bing$(echo "$apiResp" | jq -r ".images[0].url")
   fi
 
   # Logging.
@@ -100,7 +96,6 @@ do
     done
   # Set the wallpaper for unity, gnome3, cinnamon.
   elif gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
-    #Logging
     # Set the view to zoom,
     gsettings set org.gnome.desktop.background picture-options "zoom"
   else
