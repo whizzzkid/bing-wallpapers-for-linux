@@ -1,19 +1,14 @@
 # Bing Wallpapers For Linux
 This enables bing wallpaper on linux, specifically debian based distros.
 
+Forked from https://github.com/whizzzkid/bing-wallpapers-for-linux
+
 ## Supported Desktop Environments
 
 - Gnome
 - Cinnamon
 - Unity
 - Xfce
-
-## Installation Instruction (Ubuntu, Mint and other Debian based distros)
-This should be simple.
-
-    sudo add-apt-repository ppa:whizzzkid/bingwallpaper
-    sudo apt-get update
-    sudo apt-get install bingwallpaper
 
 ## Using Script directly.
 Just download or clone this repo. Run:
@@ -40,13 +35,6 @@ To setup regular checks for new wallapers, edit crontab for the current user, us
 
 This will run every 6 hours. You can use [this link](http://www.crontab-generator.org/) for reference.
 
-*Note: If you installed this package from apt, then disable the startup script setup by default. Go to startup applications and remove 'bingwallpaper'*
-
-## Contributing
-Feel free to make changes and send PR, I'll be accepting them.
-
 ## License
 GPLv2
 
-## PPA
-https://launchpad.net/~whizzzkid/+archive/ubuntu/bingwallpaper
