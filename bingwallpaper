@@ -101,7 +101,7 @@ do
     # Set the view to zoom,
     gsettings set org.gnome.desktop.background picture-options "zoom"
   else
-    "$XDG_CURRENT_DESKTOP not supported."
+    echo "$XDG_CURRENT_DESKTOP not supported."
     break
   fi
 
