@@ -67,6 +67,9 @@ do
 
   # Req image url (raw).
   reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
+  
+  # Image copyright.
+  copyright=$(echo $apiResp | grep -oP "copyright\":\"[^\"]*" | cut -d "\"" -f 3)
 
   # Checking if reqImgURL exists.
   if ! wget --quiet --spider $reqImgURL; then
@@ -88,6 +91,9 @@ do
   # Logging.
   echo "Saving image to $path$imgName"
 
+  # Writing copyright.
+  echo "$copyright" > $path${imgName/%.jpg/.txt}
+  
   if [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]
   then
     xres=($(echo $(xfconf-query --channel xfce4-desktop --list | grep last-image)))
