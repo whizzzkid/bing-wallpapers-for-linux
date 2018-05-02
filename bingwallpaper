@@ -86,7 +86,7 @@ do
   mkdir -p $path
 
   # Saving Image to collection.
-  curl -s -o $path$imgName $reqImgURL
+  curl -L -s -o $path$imgName $reqImgURL
 
   # Logging.
   echo "Saving image to $path$imgName"
