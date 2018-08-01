@@ -72,7 +72,7 @@ do
   copyright=$(echo $apiResp | grep -oP "copyright\":\"[^\"]*" | cut -d "\"" -f 3)
 
   # Checking if reqImgURL exists.
-  if ! wget --quiet --spider $reqImgURL; then
+  if ! wget --quiet --spider --max-redirect 0 $reqImgURL; then
     reqImgURL=$defImgURL
   fi
 
