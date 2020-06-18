@@ -101,6 +101,9 @@ do
     do
       xfconf-query --channel xfce4-desktop --property $x --set $path$imgName
     done
+  elif [ "$XDG_CURRENT_DESKTOP" = "i3" ]
+  then
+    feh --bg-scale $path$imgName
   elif [ "$XDG_CURRENT_DESKTOP" = "MATE" ]
   then
     gsettings set org.mate.background picture-filename $path$imgName
