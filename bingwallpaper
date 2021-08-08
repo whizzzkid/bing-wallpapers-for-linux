@@ -80,7 +80,7 @@ do
   echo "Bing Image of the day: $reqImgURL"
 
   # Getting Image Name.
-  imgName=${reqImgURL##*/}
+  imgName=${reqImgURL##*/*=}
 
   # Create Path Dir.
   mkdir -p $path
@@ -107,6 +107,18 @@ do
   elif [ "$XDG_CURRENT_DESKTOP" = "MATE" ]
   then
     gsettings set org.mate.background picture-filename $path$imgName
+  elif [ "$XDG_CURRENT_DESKTOP" = "KDE" ]
+  then
+    qdbus-qt5 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+    var allDesktops = desktops();
+    for (i=0;i<allDesktops.length;i++) {
+        d = allDesktops[i];
+        d.wallpaperPlugin = 'org.kde.image';
+        d.currentConfigGroup = Array('Wallpaper',
+                                    'org.kde.image',
+                                    'General');
+        d.writeConfig('Image', 'file://$path$imgName')
+    }"
   # Set the wallpaper for unity, gnome3, cinnamon.
   elif gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
     #Logging
