@@ -23,7 +23,7 @@ const="&n=1"
 extn=".jpg"
 
 # Size.
-size="1920x1200"
+size="1920x1080"
 
 # Collection Path.
 path="$HOME/Pictures/Bing/"
@@ -53,7 +53,7 @@ while [ 1 ]
 do
 
   # Logging.
-  echo "Pinging Bing API..."
+  echo "Pinging Bing API at `date`"
 
   # Fetching API response.
   apiResp=$(curl -s $reqImg)
@@ -67,7 +67,7 @@ do
 
   # Req image url (raw).
   reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
-  
+
   # Image copyright.
   copyright=$(echo $apiResp | grep -oP "copyright\":\"[^\"]*" | cut -d "\"" -f 3)
 
@@ -85,15 +85,19 @@ do
   # Create Path Dir.
   mkdir -p $path
 
-  # Saving Image to collection.
-  curl -L -s -o $path$imgName $reqImgURL
+  # If the Image is not found in the collection or it has a zero bytes size,
+  # then save it and apply it to the desktop.
+  if [ ! -s $path$imgName ]
+  then
+    curl -L -s -o $path$imgName $reqImgURL
 
-  # Logging.
-  echo "Saving image to $path$imgName"
+    # Writing copyright for new Image file.
+    echo "$copyright" > $path${imgName/%.jpg/.txt}
 
-  # Writing copyright.
-  echo "$copyright" > $path${imgName/%.jpg/.txt}
-  
+    # Logging.
+    echo "Image was saved to $path$imgName"
+  fi
+
   if [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]
   then
     xres=($(echo $(xfconf-query --channel xfce4-desktop --list | grep last-image)))
@@ -118,12 +122,12 @@ do
   fi
 
   echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
-  
+
   # If -1 option was passed just run once
   if [ $run_once == true ];then
     break
   fi
 
-  # Re-checks for updates every 3 hours.
-  sleep 10800
+  # Re-checks for updates every 6 hours.
+  sleep 6h
 done
