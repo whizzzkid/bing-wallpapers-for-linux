@@ -13,8 +13,25 @@ format="&format=js"
 # For day (0=current; 1=yesterday... so on).
 day="&idx=0"
 
+
 # Market for image.
-market="&mkt=en-US"
+# To override the default, define BING_MARKET when calling the script.
+# https://docs.microsoft.com/en-us/bing/search-apis/bing-image-search/reference/market-codes
+BING_MARKET_LIST="es-AR en-AU de-AT nl-BE fr-BE pt-BR en-CA fr-CA es-CL da-DK \
+fi-FI fr-FR de-DE zh-HK en-IN en-ID it-IT ja-JP ko-KR en-MY es-MX nl-NL en-NZ \
+no-NO zh-CN pl-PL en-PH ru-RU en-ZA es-ES sv-SE fr-CH de-CH zh-TW tr-TR en-GB \
+en-US es-US"
+BING_DEFAULT_MARKET="en-US"
+if [ -z "$BING_MARKET" ] || [ -z "$(echo "$BING_MARKET_LIST" | tr ' ' '\n' | \
+grep -Fx "$BING_MARKET")" ]; then
+  if [ ! -z "$BING_MARKET" ]; then
+    echo "$BING_MARKET is not a valid selection for market, using default \
+$BING_DEFAULT_MARKET. The list of valid markets is $BING_MARKET_LIST"
+  fi
+  market="&mkt=$BING_DEFAULT_MARKET"
+else
+  market="&mkt=$BING_MARKET"
+fi
 
 # API Constant (fetch how many).
 const="&n=1"
@@ -22,8 +39,16 @@ const="&n=1"
 # Image extension.
 extn=".jpg"
 
-# Size.
-size="1920x1080"
+# Image size.
+# To override the default, define BING_WALLPAPER_SIZE when calling the script.
+BING_WALLPAPER_SIZE_LIST="1920x1080 1920x1200"
+BING_WALLPAPER_SIZE_DEFAULT="1920x1080"
+if [ -z "$BING_WALLPAPER_SIZE" ] || [ -z "$(echo "$BING_WALLPAPER_SIZE_LIST" | \
+tr ' ' '\n' | grep -Fx "$BING_WALLPAPER_SIZE")" ]; then
+  size="$BING_WALLPAPER_SIZE_DEFAULT"
+else
+  size="$BING_WALLPAPER_SIZE"
+fi
 
 # Collection Path.
 path="$HOME/Pictures/Bing/"
@@ -53,7 +78,7 @@ while [ 1 ]
 do
 
   # Logging.
-  echo "Pinging Bing API at `date`"
+  echo "Pinging Bing API at $(date)"
 
   # Fetching API response.
   apiResp=$(curl -s $reqImg)
