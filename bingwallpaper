@@ -104,6 +104,12 @@ do
   elif [ "$XDG_CURRENT_DESKTOP" = "i3" ]
   then
     feh --bg-scale $path$imgName
+  
+  # Sets the background for sway
+  elif [ "$XDG_CURRENT_DESKTOP" = "sway" ]
+  then
+    swaymsg -r -q output "*" bg $path$imgName fill 
+
   elif [ "$XDG_CURRENT_DESKTOP" = "MATE" ]
   then
     gsettings set org.mate.background picture-filename $path$imgName
