@@ -30,17 +30,27 @@ path="$HOME/Pictures/Bing/"
 
 # Make it run just once (useful to run as a cron)
 run_once=false
-while getopts "1" opt; do
+while getopts "1w" opt; do
   case $opt in
     1 )
       run_once=true
       ;;
+    w )
+      no_watermark=true
+      ;;
     \? )
-      echo "Invalid option! usage: \"$0 -1\", to run once and exit"
+      echo "Invalid option!"
+      echo "Usage: \"$(basename $0) [-1] [-w]\""
+      echo "    -1 to run once and exit"
+      echo "    -w to lower resolution and have no watermark"
       exit 1
       ;;
   esac
 done
+
+if [ -n "$no_watermark" ]; then
+  size="1920x1080"
+fi
 
 ########################################################################
 #### DO NOT EDIT BELOW THIS LINE #######################################
