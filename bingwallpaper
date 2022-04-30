@@ -30,13 +30,19 @@ path="$HOME/Pictures/Bing/"
 
 # Make it run just once (useful to run as a cron)
 run_once=false
-while getopts "1" opt; do
+while getopts "1m:" opt; do
   case $opt in
     1 )
       run_once=true
       ;;
+    m )
+      mkt_opt=$OPTARG
+      ;;
     \? )
-      echo "Invalid option! usage: \"$0 -1\", to run once and exit"
+      echo "Invalid option!"
+      echo "Usage: \"$(basename $0) [-1] [-m xx-YY]\""
+      echo "    -1 to run once and exit"
+      echo "    -m to override default market (en-US)"
       exit 1
       ;;
   esac
@@ -45,6 +51,11 @@ done
 ########################################################################
 #### DO NOT EDIT BELOW THIS LINE #######################################
 ########################################################################
+
+if echo "$mkt_opt" | grep -qEe '^[a-z]{2}-[A-Z]{2}$'; then
+	market=$mkt_opt
+	echo "Market is now $market"
+fi
 
 # Required Image Uri.
 reqImg=$bing$api$format$day$market$const
