@@ -21,14 +21,18 @@ BING_MARKET_LIST="es-AR en-AU de-AT nl-BE fr-BE pt-BR en-CA fr-CA es-CL da-DK \
 fi-FI fr-FR de-DE zh-HK en-IN en-ID it-IT ja-JP ko-KR en-MY es-MX nl-NL en-NZ \
 no-NO zh-CN pl-PL en-PH ru-RU en-ZA es-ES sv-SE fr-CH de-CH zh-TW tr-TR en-GB \
 en-US es-US"
-BING_DEFAULT_MARKET="en-US"
+# Let Bing pick the market, by default
+BING_DEFAULT_MARKET=""
 if [ -z "$BING_MARKET" ] || [ -z "$(echo "$BING_MARKET_LIST" | tr ' ' '\n' | \
 grep -Fx "$BING_MARKET")" ]; then
   if [ ! -z "$BING_MARKET" ]; then
     echo "$BING_MARKET is not a valid selection for market, using default \
 $BING_DEFAULT_MARKET. The list of valid markets is $BING_MARKET_LIST"
   fi
-  market="&mkt=$BING_DEFAULT_MARKET"
+  # Don't send market if default is not set
+  if [ ! -z "$BING_DEFAULT_MARKET" ]; then
+    market="&mkt=$BING_DEFAULT_MARKET"
+  fi
 else
   market="&mkt=$BING_MARKET"
 fi
