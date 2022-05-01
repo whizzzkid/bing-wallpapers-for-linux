@@ -13,8 +13,29 @@ format="&format=js"
 # For day (0=current; 1=yesterday... so on).
 day="&idx=0"
 
+
 # Market for image.
-market="&mkt=en-US"
+# To override the default, define BING_MARKET when calling the script.
+# https://docs.microsoft.com/en-us/bing/search-apis/bing-image-search/reference/market-codes
+BING_MARKET_LIST="es-AR en-AU de-AT nl-BE fr-BE pt-BR en-CA fr-CA es-CL da-DK \
+fi-FI fr-FR de-DE zh-HK en-IN en-ID it-IT ja-JP ko-KR en-MY es-MX nl-NL en-NZ \
+no-NO zh-CN pl-PL en-PH ru-RU en-ZA es-ES sv-SE fr-CH de-CH zh-TW tr-TR en-GB \
+en-US es-US"
+# Let Bing pick the market, by default
+BING_DEFAULT_MARKET=""
+if [ -z "$BING_MARKET" ] || [ -z "$(echo "$BING_MARKET_LIST" | tr ' ' '\n' | \
+grep -Fx "$BING_MARKET")" ]; then
+  if [ ! -z "$BING_MARKET" ]; then
+    echo "$BING_MARKET is not a valid selection for market, using default \
+$BING_DEFAULT_MARKET. The list of valid markets is $BING_MARKET_LIST"
+  fi
+  # Don't send market if default is not set
+  if [ ! -z "$BING_DEFAULT_MARKET" ]; then
+    market="&mkt=$BING_DEFAULT_MARKET"
+  fi
+else
+  market="&mkt=$BING_MARKET"
+fi
 
 # API Constant (fetch how many).
 const="&n=1"
@@ -22,8 +43,16 @@ const="&n=1"
 # Image extension.
 extn=".jpg"
 
-# Size.
-size="1920x1200"
+# Image size.
+# To override the default, define BING_WALLPAPER_SIZE when calling the script.
+BING_WALLPAPER_SIZE_LIST="1920x1080 1920x1200"
+BING_WALLPAPER_SIZE_DEFAULT="1920x1080"
+if [ -z "$BING_WALLPAPER_SIZE" ] || [ -z "$(echo "$BING_WALLPAPER_SIZE_LIST" | \
+tr ' ' '\n' | grep -Fx "$BING_WALLPAPER_SIZE")" ]; then
+  size="$BING_WALLPAPER_SIZE_DEFAULT"
+else
+  size="$BING_WALLPAPER_SIZE"
+fi
 
 # Collection Path.
 path="$HOME/Pictures/Bing/"
@@ -53,7 +82,7 @@ while [ 1 ]
 do
 
   # Logging.
-  echo "Pinging Bing API..."
+  echo "Pinging Bing API at $(date)"
 
   # Fetching API response.
   apiResp=$(curl -s $reqImg)
@@ -67,7 +96,7 @@ do
 
   # Req image url (raw).
   reqImgURL=$bing$(echo $apiResp | grep -oP "urlbase\":\"[^\"]*" | cut -d "\"" -f 3)"_"$size$extn
-  
+
   # Image copyright.
   copyright=$(echo $apiResp | grep -oP "copyright\":\"[^\"]*" | cut -d "\"" -f 3)
 
@@ -85,15 +114,19 @@ do
   # Create Path Dir.
   mkdir -p $path
 
-  # Saving Image to collection.
-  curl -L -s -o $path$imgName $reqImgURL
+  # If the Image is not found in the collection or it has a zero bytes size,
+  # then save it and apply it to the desktop.
+  if [ ! -s $path$imgName ]
+  then
+    curl -L -s -o $path$imgName $reqImgURL
 
-  # Logging.
-  echo "Saving image to $path$imgName"
+    # Writing copyright for new Image file.
+    echo "$copyright" > $path${imgName/%.jpg/.txt}
 
-  # Writing copyright.
-  echo "$copyright" > $path${imgName/%.jpg/.txt}
-  
+    # Logging.
+    echo "Image was saved to $path$imgName"
+  fi
+
   if [ "$XDG_CURRENT_DESKTOP" = "XFCE" ]
   then
     xres=($(echo $(xfconf-query --channel xfce4-desktop --list | grep last-image)))
@@ -118,12 +151,12 @@ do
   fi
 
   echo "New wallpaper set successfully for $XDG_CURRENT_DESKTOP."
-  
+
   # If -1 option was passed just run once
   if [ $run_once == true ];then
     break
   fi
 
-  # Re-checks for updates every 3 hours.
-  sleep 10800
+  # Re-checks for updates every 6 hours.
+  sleep 6h
 done
