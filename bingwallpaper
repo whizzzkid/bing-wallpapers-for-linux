@@ -108,7 +108,10 @@ do
   then
     gsettings set org.mate.background picture-filename $path$imgName
   # Set the wallpaper for unity, gnome3, cinnamon.
-  elif gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName"; then
+  elif 
+    gsettings set org.gnome.desktop.background picture-uri "file://$path$imgName";
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$path$imgName"; 
+  then
     #Logging
     # Set the view to zoom,
     gsettings set org.gnome.desktop.background picture-options "zoom"
