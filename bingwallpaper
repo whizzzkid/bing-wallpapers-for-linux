@@ -1,5 +1,5 @@
 #!/bin/bash
-# author: Whizzzkid (me@nishantarora.in)
+# credit to original author: Whizzzkid (me@nishantarora.in)
 
 # Base URL.
 bing="http://www.bing.com"
@@ -14,7 +14,7 @@ format="&format=js"
 day="&idx=0"
 
 # Market for image.
-market="&mkt=en-US"
+market="&mkt=en-GB"
 
 # API Constant (fetch how many).
 const="&n=1"
@@ -23,7 +23,7 @@ const="&n=1"
 extn=".jpg"
 
 # Size.
-size="1920x1200"
+size="UHD"
 
 # Collection Path.
 path="$HOME/Pictures/Bing/"
